@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 
 from streamlit_ace import st_ace
@@ -6,10 +8,18 @@ import json
 
 import streamlit.components.v1 as components
 
-ConceptView = components.declare_component(
+root_dir = os.path.dirname(os.path.abspath(__file__))
+build_dir = os.path.join(root_dir, "frontend/build")
+
+concept_view = components.declare_component(
     "ConceptView",
-    url="http://localhost:3001"
+    path=build_dir
 )
+
+# concept_view = components.declare_component(
+#     "ConceptView",
+#     url="http://localhost:3001"
+# )
 
 
 
@@ -37,4 +47,4 @@ with left_column:
     # st.write(code_note(content))
     st.subheader("Problems")
     for concept in code_note(content)["structured_data"]["problems"]:
-        ConceptView(object=concept)
+        concept_view(object=concept)
