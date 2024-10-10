@@ -4,9 +4,17 @@ from streamlit_ace import st_ace
 from langchain_ollama import OllamaLLM
 import json
 
+import streamlit.components.v1 as components
 
-lm = OllamaLLM(model="mistral:latest", base_url="http://172.17.0.1:11434")
-# lm = OllamaLLM(model="mistral:latest")
+ConceptView = components.declare_component(
+    "ConceptView",
+    url="http://localhost:3001"
+)
+
+
+
+# lm = OllamaLLM(model="mistral:latest", base_url="http://172.17.0.1:11434") # docker port
+lm = OllamaLLM(model="mistral:latest")
 
 def code_note(note: str):
     print("Thinking...")
@@ -26,4 +34,7 @@ with right_column:
 
 with left_column:
     st.header("Suggested Data")
-    st.write(code_note(content))
+    # st.write(code_note(content))
+    st.subheader("Problems")
+    for concept in code_note(content)["structured_data"]["problems"]:
+        ConceptView(object=concept)
