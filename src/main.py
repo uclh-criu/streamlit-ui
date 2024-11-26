@@ -84,9 +84,6 @@ def save_doc(filename):
     with open(data_dir / Path(filename), 'w') as file:
         file.write(json.dumps(doc, indent=2))
 
-filenames_in_pattern = list(Path("data").glob("doc_*.json"))
-[f.stem for f in filenames_in_pattern]
-
 with st.form("Save"):
     filename = st.text_input("Filename", value=default_filename())
     submitted = st.form_submit_button("save", on_click=save_doc, kwargs={"filename": filename})
