@@ -5,3 +5,4 @@ ollama
 **node_modules
 **build
 pyrightconfig.json
+/data
