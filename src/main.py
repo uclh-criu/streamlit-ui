@@ -1,3 +1,4 @@
+from functools import cache
 import os
 
 import streamlit as st
@@ -8,8 +9,12 @@ import json
 
 import streamlit.components.v1 as components
 
+
+st.set_page_config(layout="wide")
+
 root_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(root_dir, "frontend/build")
+
 
 concept_view = components.declare_component(
     "ConceptView",
@@ -22,10 +27,16 @@ concept_view = components.declare_component(
 # )
 
 
+@st.cache_resource
+def load_model():
+    # lm = OllamaLLM(model="mistral:latest", base_url="http://172.17.0.1:11434") # docker port
+    return OllamaLLM(model="mistral:latest")
 
-# lm = OllamaLLM(model="mistral:latest", base_url="http://172.17.0.1:11434") # docker port
-lm = OllamaLLM(model="mistral:latest")
 
+lm = load_model()
+
+
+@st.cache_data
 def code_note(note: str):
     print("Thinking...")
     output = lm.invoke(
@@ -34,17 +45,16 @@ def code_note(note: str):
     print(output)
     return {"structured_data": json.loads(output)}
 
-st.set_page_config(layout="wide")
+
 
 left_column, right_column = st.columns(2)
 
 with right_column:
-    st.header("Note")
     content = st_ace()
 
 with left_column:
-    st.header("Suggested Data")
     # st.write(code_note(content))
     st.subheader("Problems")
+
     for concept in code_note(content)["structured_data"]["problems"]:
         concept_view(object=concept)
