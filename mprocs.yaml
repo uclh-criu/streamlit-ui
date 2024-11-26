@@ -1,0 +1,5 @@
+procs:
+  streamlit/main:
+    shell: uv run streamlit run src/main.py
+  component:
+    shell: npm run --prefix src/frontend start
