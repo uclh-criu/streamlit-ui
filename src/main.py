@@ -1,4 +1,3 @@
-from functools import cache
 import os
 
 import streamlit as st

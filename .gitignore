@@ -1,3 +1,6 @@
 .DS_Store
 .venv
 .pyrightconfig.json
+ollama
+**node_modules
+**build
