@@ -7,8 +7,6 @@ from langchain_ollama import OllamaLLM
 import json
 import streamlit.components.v1 as components
 from pathlib import Path
-import re
-from tkinter.constants import S
 
 
 st.set_page_config(layout="wide")
