@@ -2,6 +2,9 @@
 
 ![ui](assets/ui.png)
 
+> [!IMPORTANT]
+> This currently depends on using a local Ollama hosted instance of mistral. Install [Ollama](https://ollama.com), then get mistral by running `ollama pull mistral`.
+
 Build and install with [uv](https://github.com/astral-sh/uv) and npm:
 ```bash
 uv venv
