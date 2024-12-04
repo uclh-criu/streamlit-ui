@@ -36,11 +36,7 @@ class ConceptView extends StreamlitComponentBase<State> {
   }
   public render = (): ReactNode => {
     // Arguments that are passed to the plugin in Python are accessible
-    // via `this.props.args`. Here, we access the "name" arg.
     const object = this.props.args["object"]
-    // Streamlit sends us a theme object via props that we can use to ensure
-    // that our component has visuals that match the active theme in a
-    // streamlit app.
     const { theme } = this.props
     const style: React.CSSProperties = {}
 
@@ -70,15 +66,6 @@ class ConceptView extends StreamlitComponentBase<State> {
         }}
       >
         {this.renderValue(object)}
-        <span>
-          Accept
-          <input
-            type="checkbox"
-            onChange={(event) => {
-              Streamlit.setComponentValue(event.target.checked)
-            }}
-          />
-        </span>
       </div>
     )
   }

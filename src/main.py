@@ -83,7 +83,10 @@ def code_note(note: str):
 
 def handle_code_button(content: str = ""):
     st.session_state["note_content"] = content
-    st.session_state["problem_list"] = code_note(content)["structured_data"]["problems"]
+    st.session_state["problem_list"] = [
+        {"concept": concept, "accepted": False}
+        for concept in code_note(content)["structured_data"]["problems"]
+    ]
 
 
 @st.dialog("open")
@@ -113,12 +116,22 @@ left_column, right_column = st.columns(2)
 
 with left_column:
     st.subheader("Problems")
+    key = 0
     for concept in st.session_state["problem_list"]:
-        concept = concept["concept"]
-        val = concept_view(
-            object=concept
-        )  # the problem list is the list *with* accepteds
-        displayed_problem_list.append({"concept": concept, "accepted": val})
+        concept_data = concept["concept"]
+        concept_col, accept_col = st.columns(2)
+        with concept_col:
+            concept_view(
+                object=concept_data,
+            )
+        with accept_col:
+            accepted = st.checkbox(
+                "accept suggestion",
+                value=True if concept.get("accepted") else False,
+                key=key,
+            )
+        displayed_problem_list.append({"concept": concept_data, "accepted": accepted})
+        key = key + 1
 
 with right_column:
     content = st_quill(value=st.session_state["note_content"])
