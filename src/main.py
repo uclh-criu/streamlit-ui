@@ -7,12 +7,20 @@ from langchain_ollama import OllamaLLM
 import json
 import streamlit.components.v1 as components
 from pathlib import Path
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument('-d', '--dir', default='data')
+args = parser.parse_args()
+data_dir = Path(args.dir)
+if not data_dir.is_absolute():
+    data_dir = Path.cwd() / data_dir
 
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(root_dir, "frontend/build")
 
-data_dir = Path.cwd() / Path("data")
+# data_dir = Path.cwd() / Path("data")
 
 st.set_page_config(layout="wide")
 
@@ -40,15 +48,16 @@ if "note_content" not in st.session_state:
 displayed_problem_list = []
 
 
-def default_filename(dir="data"):
+def default_filename(dir: Path):
     n = 0
-    filenames_in_pattern = list(Path(dir).glob("doc_*.json"))
+    filenames_in_pattern = list(dir.glob("doc_*.json"))
     if filenames_in_pattern:
         n = max([int(s.stem.split("_")[1]) for s in filenames_in_pattern]) + 1
     return f"doc_{n}.json"
 
 
 def save_document(filename):
+    data_dir.mkdir(exist_ok=True)
     with open(data_dir / Path(filename), "w") as file:
         file.write(
             json.dumps(
@@ -101,7 +110,7 @@ def open_dialog():
 
 @st.dialog("save as")
 def save_dialog():
-    filename = st.text_input("Filename", value=default_filename())
+    filename = st.text_input("Filename", value=default_filename(data_dir))
     if st.button("save", on_click=save_document, args=(filename,)):
         st.write("saved")
 
