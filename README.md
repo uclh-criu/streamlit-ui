@@ -17,7 +17,7 @@ Run with:
 ```bash
 uv run streamlit run src/main.py
 ```
-The data directory, where it saves documents, defaults to `data` in your workign directory.
+The data directory, where it saves documents, defaults to `data` in your working directory.
 
 To run with a custom data directory:
 ```bash
