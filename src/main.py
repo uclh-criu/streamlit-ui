@@ -67,7 +67,6 @@ def load_document(filename):
         st.session_state["note_content"] = json_content["text"]
 
 
-
 @st.cache_data
 def code_note(note: str):
     print("Thinking...")
@@ -84,28 +83,29 @@ def handle_code_button(content: str = ""):
     st.session_state["note_content"] = content
     st.session_state["problem_list"] = code_note(content)["structured_data"]["problems"]
 
+
 @st.dialog("open")
 def open_dialog():
     filename = st.selectbox(
         "Filename",
         options=[filepath.name for filepath in list(Path(data_dir).glob("doc_*.json"))],
     )
-    if st.button(
-        "open", on_click=load_document, args=(filename,)
-    ):
+    if st.button("open", on_click=load_document, args=(filename,)):
         st.rerun()
 
-st.button("open", key="open-button", on_click=open_dialog)
 
 @st.dialog("save as")
 def save_dialog():
     filename = st.text_input("Filename", value=default_filename())
-    if st.button(
-        "save", on_click=save_document, args=(filename,)
-    ):
+    if st.button("save", on_click=save_document, args=(filename,)):
         st.write("saved")
 
-st.button("save", key="save-button", on_click=save_dialog)
+
+left_column, right_column = st.columns([0.15, 2])
+with left_column:
+    st.button("open", key="open-button", on_click=open_dialog)
+with right_column:
+    st.button("save", key="save-button", on_click=save_dialog)
 
 left_column, right_column = st.columns(2)
 
