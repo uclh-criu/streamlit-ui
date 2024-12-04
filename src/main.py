@@ -16,12 +16,12 @@ data_dir = Path.cwd() / Path("data")
 
 st.set_page_config(layout="wide")
 
-# concept_view = components.declare_component(
-#     "ConceptView",
-#     path=build_dir
-# )
+concept_view = components.declare_component(
+    "ConceptView",
+    path=build_dir
+)
 
-concept_view = components.declare_component("ConceptView", url="http://localhost:3001")
+# concept_view = components.declare_component("ConceptView", url="http://localhost:3001")
 
 
 @st.cache_resource
