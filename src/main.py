@@ -84,8 +84,8 @@ def handle_code_button(content: str = ""):
     st.session_state["note_content"] = content
     st.session_state["problem_list"] = code_note(content)["structured_data"]["problems"]
 
-@st.dialog("Load file")
-def load_dialog():
+@st.dialog("open")
+def open_dialog():
     filename = st.selectbox(
         "Filename",
         options=[filepath.name for filepath in list(Path(data_dir).glob("doc_*.json"))],
@@ -95,7 +95,17 @@ def load_dialog():
     ):
         st.rerun()
 
-st.button("Load a file", on_click=load_dialog)
+st.button("open", key="open-button", on_click=open_dialog)
+
+@st.dialog("save as")
+def save_dialog():
+    filename = st.text_input("Filename", value=default_filename())
+    if st.button(
+        "save", on_click=save_document, args=(filename,)
+    ):
+        st.write("saved")
+
+st.button("save", key="save-button", on_click=save_dialog)
 
 left_column, right_column = st.columns(2)
 
@@ -110,15 +120,3 @@ with left_column:
 with right_column:
     content = st_quill(value=st.session_state["note_content"])
     st.button("Code", on_click=handle_code_button, kwargs={"content": content})
-
-
-with st.form("Save"):
-    filename = st.text_input("Filename", value=default_filename())
-    submitted = st.form_submit_button(
-        "save", on_click=save_document, kwargs={"filename": filename}
-    )
-    if submitted:
-        st.write("saved")
-
-
-st.session_state["problem_list"]
