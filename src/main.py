@@ -37,6 +37,8 @@ if "problem_list" not in st.session_state:
 if "note_content" not in st.session_state:
     st.session_state["note_content"] = ""
 
+displayed_problem_list = []
+
 
 def default_filename(dir="data"):
     n = 0
@@ -52,7 +54,7 @@ def save_document(filename):
             json.dumps(
                 {
                     "text": st.session_state["note_content"],
-                    "data": st.session_state["problem_list"],
+                    "data": displayed_problem_list,
                 },
                 indent=2,
             )
@@ -101,21 +103,22 @@ def save_dialog():
         st.write("saved")
 
 
-left_column, right_column = st.columns([0.15, 2])
+left_column, right_column = st.columns(2)
 with left_column:
-    st.button("open", key="open-button", on_click=open_dialog)
+    st.button("open", key="open-button", use_container_width=True, on_click=open_dialog)
 with right_column:
-    st.button("save", key="save-button", on_click=save_dialog)
+    st.button("save", key="save-button", use_container_width=True, on_click=save_dialog)
 
 left_column, right_column = st.columns(2)
 
 with left_column:
     st.subheader("Problems")
     for concept in st.session_state["problem_list"]:
+        concept = concept["concept"]
         val = concept_view(
             object=concept
         )  # the problem list is the list *with* accepteds
-        # problem_list.append({"concept": concept, "accepted": val})
+        displayed_problem_list.append({"concept": concept, "accepted": val})
 
 with right_column:
     content = st_quill(value=st.session_state["note_content"])
