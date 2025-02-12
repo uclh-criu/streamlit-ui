@@ -9,14 +9,23 @@ import streamlit.components.v1 as components
 from pathlib import Path
 from argparse import ArgumentParser
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 parser = ArgumentParser()
 parser.add_argument("-d", "--dir", default="data")
 parser.add_argument("-b", "--backend")
+parser.add_argument("-l", "--loglevel", default="INFO")
 args = parser.parse_args()
 
 data_dir = Path(args.dir)
 if not data_dir.is_absolute():
     data_dir = Path.cwd() / data_dir
+
+logging.basicConfig(
+    format="%(levelname)s %(asctime)s: %(message)s", level=args.loglevel
+)
 
 backend = args.backend
 
@@ -63,7 +72,7 @@ def save_document(filename):
 
 
 def load_document(filename):
-    print(f"Opening: {filename}")
+    logger.info(f"Opening: {filename}")
     with open(data_dir / Path(filename), "r") as file:
         json_content = json.load(file)
         st.session_state["problem_list"] = json_content["data"]
@@ -72,12 +81,12 @@ def load_document(filename):
 
 @st.cache_data
 def code_note(note: str):
-    print(f"coding note with {model}")
-    print(note)
+    logger.info(f"coding note with {model}")
+    logger.info(note)
     output = requests.post(endpoints[model], json={"input": {"note": note}}).json()[
         "output"
     ]
-    print(output)
+    logger.info(output)
     return {"structured_data": output}
 
 
@@ -91,7 +100,7 @@ def handle_code_button(content: str = ""):
 
 st.title("Miade Automated Coding Playground")
 st.write(
-    "All data is sent to external LLM provders, DO NOT include any real patient data."
+    "All data is sent to external LLM providers, DO NOT include any real patient data."
 )
 
 
