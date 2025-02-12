@@ -1,21 +1,24 @@
 import os
+import requests
 
 import streamlit as st
 
 from streamlit_quill import st_quill
-from langchain_ollama import OllamaLLM
 import json
 import streamlit.components.v1 as components
 from pathlib import Path
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
-parser.add_argument('-d', '--dir', default='data')
+parser.add_argument("-d", "--dir", default="data")
+parser.add_argument("-b", "--backend")
 args = parser.parse_args()
+
 data_dir = Path(args.dir)
 if not data_dir.is_absolute():
     data_dir = Path.cwd() / data_dir
 
+backend = args.backend
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(root_dir, "frontend/build")
@@ -24,21 +27,12 @@ build_dir = os.path.join(root_dir, "frontend/build")
 
 st.set_page_config(layout="wide")
 
-concept_view = components.declare_component(
-    "ConceptView",
-    path=build_dir
-)
+concept_view = components.declare_component("ConceptView", path=build_dir)
 
 # concept_view = components.declare_component("ConceptView", url="http://localhost:3001")
 
-
-@st.cache_resource
-def model():
-    # return OllamaLLM(model="mistral:latest", base_url="http://172.17.0.1:11434") # docker port
-    return OllamaLLM(model="mistral:latest")
-
-
-model()
+models = requests.get(f"{backend}/models").json()["model_endpoints"]
+endpoints = {model["name"]: f"{backend}/{model['endpoint']}" for model in models}
 
 if "problem_list" not in st.session_state:
     st.session_state["problem_list"] = []
@@ -82,12 +76,11 @@ def load_document(filename):
 def code_note(note: str):
     print("Thinking...")
     print(note)
-    output = model().invoke(
-        'You are a clinical coder. You are accurate and only return concepts found in the note you read. You structure your outputs as JSON, following this schema, where <CONCEPT-CODE> is the numeric SNOMED-CT code, and <PREFFERED-NAME> is the preferred name according to SNOMED: `{"problems": [{"id": <CONCEPT-CODE>, "name": <PREFFERED-NAME>}]}`. PROVIDE NO OTHER OUTPUT THAN VALID JSON. If there is no text, return an empty `{}`. Code a problem list from this clinical note with snomed-ct: '
-        + note
-    )
+    output = requests.post(endpoints[model], json={"input": {"note": note}}).json()[
+        "output"
+    ]
     print(output)
-    return {"structured_data": json.loads(output)}
+    return {"structured_data": output}
 
 
 def handle_code_button(content: str = ""):
@@ -144,4 +137,9 @@ with left_column:
 
 with right_column:
     content = st_quill(value=st.session_state["note_content"])
+    model = st.segmented_control(
+        "Choose model:",
+        [model["name"] for model in models],
+        default=[model["name"] for model in models][0],
+    )
     st.button("Code", on_click=handle_code_button, kwargs={"content": content})
