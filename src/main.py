@@ -23,8 +23,6 @@ backend = args.backend
 root_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(root_dir, "frontend/build")
 
-# data_dir = Path.cwd() / Path("data")
-
 st.set_page_config(layout="wide")
 
 concept_view = components.declare_component("ConceptView", path=build_dir)
@@ -74,7 +72,7 @@ def load_document(filename):
 
 @st.cache_data
 def code_note(note: str):
-    print("Thinking...")
+    print(f"coding note with {model}")
     print(note)
     output = requests.post(endpoints[model], json={"input": {"note": note}}).json()[
         "output"
@@ -89,6 +87,12 @@ def handle_code_button(content: str = ""):
         {"concept": concept, "accepted": False}
         for concept in code_note(content)["structured_data"]["problems"]
     ]
+
+
+st.title("Miade Automated Coding Playground")
+st.write(
+    "All data is sent to external LLM provders, DO NOT include any real patient data."
+)
 
 
 @st.dialog("open")
