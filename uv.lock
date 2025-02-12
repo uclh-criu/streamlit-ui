@@ -767,7 +767,7 @@ wheels = [
 
 [[package]]
 name = "streamlit"
-version = "1.38.0"
+version = "1.42.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "altair" },
@@ -790,9 +790,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "watchdog", marker = "platform_system != 'Darwin'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/de/dc/c4e77f5855538e11d0675b8f5e8922cb7d4928d8f877988ba1c7c63f02f6/streamlit-1.38.0.tar.gz", hash = "sha256:c4bf36b3ef871499ed4594574834583113f93f077dd3035d516d295786f2ad63", size = 8360969 }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/61/a59da06a2822b265fc6230650a1ec4b9203da76ee9cf023083752debf9fa/streamlit-1.42.0.tar.gz", hash = "sha256:8c48494ccfad33e7d0bc5873151800b203cb71203bfd42bc7418940710ca4970", size = 9169261 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7c/2e/60e624bbe16f4baa45cb6e48a1ee05edd48a0a14cceec4d7eec9258755ac/streamlit-1.38.0-py2.py3-none-any.whl", hash = "sha256:0653ecfe86fef0f1608e3e082aef7eb335d8713f6f31e9c3b19486d1c67d7c41", size = 8741278 },
+    { url = "https://files.pythonhosted.org/packages/ad/dc/69068179e09488d0833a970d06e8bf40e35669a7bddb8a3caadc13b7dff4/streamlit-1.42.0-py2.py3-none-any.whl", hash = "sha256:edf333fd3525b7c64b19e1156b483a1a93cbdb09a3a06f26478388d68f971090", size = 9560180 },
 ]
 
 [[package]]
@@ -838,6 +838,7 @@ dependencies = [
     { name = "argparse" },
     { name = "langchain-ollama" },
     { name = "pathlib" },
+    { name = "requests" },
     { name = "streamlit" },
     { name = "streamlit-ace" },
     { name = "streamlit-monaco" },
@@ -849,7 +850,8 @@ requires-dist = [
     { name = "argparse", specifier = ">=1.4.0" },
     { name = "langchain-ollama", specifier = ">=0.2.0" },
     { name = "pathlib", specifier = ">=1.0.1" },
-    { name = "streamlit", specifier = ">=1.38.0" },
+    { name = "requests", specifier = ">=2.32.3" },
+    { name = "streamlit", specifier = ">=1.42.0" },
     { name = "streamlit-ace", specifier = ">=0.1.1" },
     { name = "streamlit-monaco", specifier = ">=0.1.3" },
     { name = "streamlit-quill", specifier = ">=0.0.3" },
