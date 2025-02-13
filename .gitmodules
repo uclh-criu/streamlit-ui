@@ -1,0 +1,5 @@
+
+[submodule "lib/miade-llm"]
+	path = lib/miade-llm
+	url = git@github.com:uclh-criu/miade-llm.git
+	branch = raw-llm-chains
