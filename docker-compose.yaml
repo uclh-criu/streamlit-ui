@@ -2,9 +2,11 @@ services:
   ui:
     build:
       dockerfile: Dockerfile
-    command: uv run streamlit run /code/src/main.py -- -b backend:8080
+    command: uv run streamlit run /code/src/main.py -- -b http://backend:8080 -d /data
     ports:
       - "8501:8501"
+    volumes:
+      - files-volume:/data
   backend:
     build:
       context: lib/miade-llm/src
@@ -17,3 +19,5 @@ services:
       - MISTRAL_API_KEY=${MISTRAL_API_KEY}
     env_file:
       - .env
+volumes:
+  files-volume:
