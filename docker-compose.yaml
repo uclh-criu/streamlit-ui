@@ -2,9 +2,9 @@ services:
   ui:
     build:
       dockerfile: Dockerfile
-    command: uv run streamlit run /code/src/main.py --server.address 0.0.0.0 -- -b http://backend:8080 -d /data
+    command: uv run streamlit run /code/src/main.py -- -b http://backend:8080 -d /data
     ports:
-      - "8501:8501"
+      - "5000:8501"
     volumes:
       - files-volume:/data
   backend:

@@ -1,6 +1,12 @@
 # Use a Python image with uv pre-installed
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
+# Install Node.js and NPM
+RUN apt-get update && \
+    apt-get install -y nodejs npm && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install the project into `/app`
 WORKDIR /code
 
@@ -18,6 +24,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ADD . /code
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
+
+
+RUN npm install --prefix src/frontend
+RUN npm run --prefix src/frontend build
 
 # Place executables in the environment at the front of the path
 ENV PATH="/code/.venv/bin:$PATH"
