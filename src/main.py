@@ -99,8 +99,8 @@ def handle_code_button(content: str = ""):
 
 
 st.title("Miade Automated Coding Playground")
-st.write(
-    "All data is sent to external LLM providers, DO NOT include any real patient data."
+st.header(
+    "All data is sent to third-party LLM providers, who may train their models on the data and/or publish it. DO NOT include any real patient information or sensitive data of any kind."
 )
 
 
