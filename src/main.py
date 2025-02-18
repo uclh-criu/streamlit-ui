@@ -41,12 +41,12 @@ concept_view = components.declare_component("ConceptView", path=build_dir)
 models = requests.get(f"{backend}/models").json()["model_endpoints"]
 endpoints = {model["name"]: f"{backend}/{model['endpoint']}" for model in models}
 
-if "problem_list" not in st.session_state:
-    st.session_state["problem_list"] = []
+if "concept_lists" not in st.session_state:
+    st.session_state["concept_lists"] = {}
 if "note_content" not in st.session_state:
     st.session_state["note_content"] = ""
 
-displayed_problem_list = []
+displayed_concept_list = {}
 
 
 def default_filename(dir: Path):
@@ -64,7 +64,7 @@ def save_document(filename):
             json.dumps(
                 {
                     "text": st.session_state["note_content"],
-                    "data": displayed_problem_list,
+                    "data": displayed_concept_list,
                 },
                 indent=2,
             )
@@ -75,27 +75,29 @@ def load_document(filename):
     logger.info(f"Opening: {filename}")
     with open(data_dir / Path(filename), "r") as file:
         json_content = json.load(file)
-        st.session_state["problem_list"] = json_content["data"]
+        st.session_state["concept_lists"] = json_content["data"]
         st.session_state["note_content"] = json_content["text"]
 
 
 @st.cache_data
-def code_note(note: str):
+def code_note(note: str) -> dict[str, dict]:
     logger.info(f"coding note with {model}")
     logger.info(note)
     output = requests.post(endpoints[model], json={"input": {"note": note}}).json()[
         "output"
     ]
     logger.info(output)
-    return {"structured_data": output}
+    return output
 
 
 def handle_code_button(content: str = ""):
     st.session_state["note_content"] = content
-    st.session_state["problem_list"] = [
-        {"concept": concept, "accepted": False}
-        for concept in code_note(content)["structured_data"]["problems"]
-    ]
+    st.session_state["concept_lists"] = {
+        concept_list_name: [
+            {"concept": concept, "accepted": False} for concept in concept_list
+        ]
+        for concept_list_name, concept_list in code_note(content).items()
+    }
 
 
 st.title("Miade Automated Coding Playground")
@@ -130,23 +132,26 @@ with right_column:
 left_column, right_column = st.columns(2)
 
 with left_column:
-    st.subheader("Problems")
     key = 0
-    for concept in st.session_state["problem_list"]:
-        concept_data = concept["concept"]
-        concept_col, accept_col = st.columns(2)
-        with concept_col:
-            concept_view(
-                object=concept_data,
-            )
-        with accept_col:
-            accepted = st.checkbox(
-                "accept suggestion",
-                value=True if concept.get("accepted") else False,
-                key=key,
-            )
-        displayed_problem_list.append({"concept": concept_data, "accepted": accepted})
-        key = key + 1
+    for concept_list_name, concept_list in st.session_state["concept_lists"].items():
+        st.subheader(concept_list_name)
+        for concept in concept_list:
+            concept_data = concept["concept"]
+            concept_col, accept_col = st.columns(2)
+            with concept_col:
+                concept_view(
+                    object=concept_data,
+                )
+            with accept_col:
+                accepted = st.checkbox(
+                    "accept suggestion",
+                    value=True if concept.get("accepted") else False,
+                    key=key,
+                )
+            if not displayed_concept_list.get(concept_list_name):
+                displayed_concept_list[concept_list_name] = []
+            displayed_concept_list[concept_list_name].append({"concept": concept_data, "accepted": accepted})
+            key = key + 1
 
 with right_column:
     content = st_quill(value=st.session_state["note_content"])
