@@ -28,7 +28,7 @@ class ConceptView extends StreamlitComponentBase<State> {
       <div style={{ marginLeft: "10px" }}>
         {Object.entries(obj).map(([key, value]) => (
           <div key={key}>
-            <strong>{key}:</strong> {this.renderValue(value)}
+            {key}: {this.renderValue(value)}
           </div>
         ))}
       </div>
@@ -53,6 +53,7 @@ class ConceptView extends StreamlitComponentBase<State> {
       style.border = borderStyling
       style.outline = borderStyling
     }
+    const name = object.hasOwnProperty("name") ? `${object.name}` : ""
     return (
       <div
         style={{
@@ -65,6 +66,7 @@ class ConceptView extends StreamlitComponentBase<State> {
           fontFamily: "ui-monospace",
         }}
       >
+        <strong>{name}</strong>
         {this.renderValue(object)}
       </div>
     )
