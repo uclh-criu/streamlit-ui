@@ -26,11 +26,15 @@ class ConceptView extends StreamlitComponentBase<State> {
   private renderObject(obj: any): ReactNode {
     return (
       <div style={{ marginLeft: "10px" }}>
-        {Object.entries(obj).map(([key, value]) => (
-          <div key={key}>
-            {key}: {this.renderValue(value)}
-          </div>
-        ))}
+        {Object.entries(obj)
+          .filter(([key, value]) => {
+            return value != null
+          })
+          .map(([key, value]) => (
+            <div key={key}>
+              {key}: {this.renderValue(value)}
+            </div>
+          ))}
       </div>
     )
   }
