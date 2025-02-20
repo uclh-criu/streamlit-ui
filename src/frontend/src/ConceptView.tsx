@@ -28,7 +28,7 @@ class ConceptView extends StreamlitComponentBase<State> {
       <div style={{ marginLeft: "10px" }}>
         {Object.entries(obj)
           .filter(([key, value]) => {
-            return value != null
+            return value != null && key != "name"
           })
           .map(([key, value]) => (
             <div key={key}>
@@ -67,7 +67,7 @@ class ConceptView extends StreamlitComponentBase<State> {
           border: "solid 1px gray",
           marginBottom: "10px",
           filter: "drop-shadow(2px 2px lightgray)",
-          fontFamily: "ui-monospace",
+          // fontFamily: "ui-monospace",
         }}
       >
         <strong>{name}</strong>

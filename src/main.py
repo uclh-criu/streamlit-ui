@@ -35,7 +35,6 @@ build_dir = os.path.join(root_dir, "frontend/build")
 st.set_page_config(layout="wide")
 
 concept_view = components.declare_component("ConceptView", path=build_dir)
-
 # concept_view = components.declare_component("ConceptView", url="http://localhost:3001")
 
 models = requests.get(f"{backend}/models").json()["model_endpoints"]
