@@ -136,14 +136,14 @@ with left_column:
         st.subheader(concept_list_name)
         for concept in concept_list:
             concept_data = concept["concept"]
-            concept_col, accept_col = st.columns(2)
+            concept_col, accept_col = st.columns([3,1])
             with concept_col:
                 concept_view(
                     object=concept_data,
                 )
             with accept_col:
                 accepted = st.checkbox(
-                    "accept suggestion",
+                    "accept",
                     value=True if concept.get("accepted") else False,
                     key=key,
                 )
